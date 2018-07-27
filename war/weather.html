@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Weather-Reporter</title>
+<script type="text/javascript"
+	src="http://maps.googleapis.com/maps/api/js?sensor=true">
+</script>
+<style type="text/css">
+html {
+	height: 100%
+}
+</style>
+
+<script type="text/javascript" src="zxml.js"></script>
+<script type="text/javascript">
+function loadMap() {
+    var latlng = new google.maps.LatLng(document.getElementById('lat').value, document.getElementById('lon').value);
+    var myOptions = {
+      zoom: 8,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("mapres"),
+        myOptions);
+    var marker = new google.maps.Marker({
+        position: latlng, 
+        map: map, 
+        title:document.getElementById('p1').value
+    }); 
+  }
+
+	function GetValues() {
+		var ipvalue = document.getElementById("p1").value;
+		var oXmlHttp = zXmlHttp.createRequest();
+		oXmlHttp.open("GET", "WeatherReporter?txtinput=" + ipvalue, true);
+		oXmlHttp.onreadystatechange = function() {
+			if (oXmlHttp.readyState == 4) {
+				if (oXmlHttp.status == 200) {
+					DisplayResult(oXmlHttp.responseText);
+					
+				} else {
+					DisplayResult("An error occurred: " + oXmlHttp.statusText);
+				}
+			}
+		};
+		oXmlHttp.send(null);
+
+	}
+
+	function DisplayResult(result) {
+		document.getElementById('weather-res').innerHTML = result;
+		loadMap();
+		document.getElementById('weather-res').style.visibility="visible";
+		document.getElementById('mapres').style.visibility="visible";
+	}
+</script>
+</head>
+<body
+	style="height: 100%; margin: 0; padding: 0; background-image: url('./status_bg.png');">
+	<div style="position: absolute; left: 40%;">
+		<h1 style="color: white; font-weight: bold;">WEATHER REPORTER</h1>
+	</div>
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<div
+		style="position: absolute; left: 5%; border: solid; border-color: white;">
+		<input type="text" id='p1' value="" style="width: 25em; font-family: monospace; font-weight: bold; " /> <br /> <label
+			style="font-size: small; color: #C7CED6;">Ex:Bangalore or
+			Newyork</label><br /> <input type="button"
+			style="background-image: url('./button_background.png'); color: white; font-family: sans-serif; font-weight: bold;"
+			value="Get Weather" onclick="GetValues();" />
+	</div>
+	<br />
+	<br />
+	<br />
+	<br />
+	<div id="weather-res"
+		style="position: absolute; font: bold; font-family: sans-serif; left: 5%; border: solid; border-color: orange; visibility: hidden;">
+
+	</div>
+	<div id="mapres"
+		style="position: absolute; height: 70%; width: 50%; left: 40%; top: 12%; border: solid; border-color: orange; visibility: hidden;">
+
+	</div>
+</body>
+</html>
